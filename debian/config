@@ -6,24 +6,30 @@ APP_SAFE_NAME="_APP_SAFE_NAME_"
 # Source debconf library.
 . /usr/share/debconf/confmodule
 
-db_input high ${APP_NAME}/server/autoinstall || true
+db_input high ${APP_NAME}/smtp/method || true
 db_go
 
-db_get ${APP_NAME}/server/autoinstall
-if [ "$RET" = "false" ]; then
+db_get ${APP_NAME}/smtp/method
+email_delivery_method="$RET"
+
+if [ "$email_delivery_method" = "sendmail" ]; then
+  echo "You chose to deliver _APP_NAME_ email with sendmail."
   exit 0
-fi
+else
+  db_input high ${APP_NAME}/smtp/host || true
+  db_input high ${APP_NAME}/smtp/port || true
+  db_input high ${APP_NAME}/smtp/username || true
+  db_input high ${APP_NAME}/smtp/password || true
+  db_go
 
-db_input high ${APP_NAME}/server/hostname || true
-db_go
-db_input high ${APP_NAME}/server/ssl || true
-db_go
+  default_hostname=$(hostname -f)
 
-db_get ${APP_NAME}/server/ssl
-if [ "$RET" = "true" ]; then
-  db_input high ${APP_NAME}/server/ssl_cert || true
-  db_input high ${APP_NAME}/server/ssl_key || true
-  db_input high ${APP_NAME}/server/ssl_ca || true
+  db_get ${APP_NAME}/server/hostname || true
+  if [ ! -z "$RET" ]; then
+    default_hostname="$RET"
+  fi
+  # replace default value
+  db_subst ${APP_NAME}/smtp/domain default "${default_hostname}"
+  db_input high ${APP_NAME}/smtp/domain || true
   db_go
 fi
-
