@@ -1,0 +1,13 @@
+Source: _APP_NAME_-smtp
+Section: web
+Priority: extra
+Maintainer: Packager.io <support@packager.io>
+Build-Depends: debhelper (>= 7)
+Homepage: https://packager.io
+
+Package: _APP_NAME_-smtp
+Architecture: amd64
+Pre-Depends: debconf
+Provides: _APP_NAME_-smtp
+Depends: ${misc:Depends}
+Description: Provides SMTP configuration wizard for _APP_NAME_.

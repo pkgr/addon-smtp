@@ -1,0 +1,6 @@
+Template: _APP_NAME_/smtp/type
+Type: select
+Choices: sendmail, smtp
+Default: sendmail
+Description: What do you want to use to send emails from _APP_NAME_?
+ Choose the transport mechanism for sending emails from _APP_NAME_.
