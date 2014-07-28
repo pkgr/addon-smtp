@@ -12,6 +12,9 @@ db_go
 db_get ${APP_NAME}/smtp/method
 email_delivery_method="$RET"
 
+db_input high ${APP_NAME}/smtp/admin_email || true
+db_go
+
 if [ "$email_delivery_method" = "sendmail" ]; then
   echo "You chose to deliver _APP_NAME_ email with sendmail."
   exit 0
@@ -31,8 +34,5 @@ else
   # replace default value
   db_set ${APP_NAME}/smtp/domain "${default_hostname}"
   db_input high ${APP_NAME}/smtp/domain || true
-  db_go
-
-  db_input high ${APP_NAME}/smtp/admin_email || true
   db_go
 fi

@@ -57,16 +57,17 @@ case "$1" in
     db_get ${APP_NAME}/smtp/domain || true
     smtp_domain="$RET"
     db_get ${APP_NAME}/smtp/admin_email || true
-    smtp_admin_email="$RET"
+    admin_email="$RET"
 
     echo "export EMAIL_DELIVERY_METHOD=\"${email_delivery_method}\"" > "$tmpfile"
+    echo "export ADMIN_EMAIL=\"${admin_email}\"" >> "$tmpfile"
+
     if [ "$email_delivery_method" = "smtp" ]; then
       echo "export SMTP_HOST=\"${smtp_host}\"" >> "$tmpfile"
       echo "export SMTP_PORT=\"${smtp_port}\"" >> "$tmpfile"
       echo "export SMTP_USERNAME=\"${smtp_username}\"" >> "$tmpfile"
       echo "export SMTP_PASSWORD=\"${smtp_password}\"" >> "$tmpfile"
       echo "export SMTP_DOMAIN=\"${smtp_domain}\"" >> "$tmpfile"
-      echo "export ADMIN_EMAIL=\"${smtp_admin_email}\"" >> "$tmpfile"
       # generate SMTP_URL, urlencode username and password
       smtp_url="smtp://$(urlencode "${smtp_username}"):$(urlencode "${smtp_password}")@${smtp_host}:${smtp_port}/${smtp_domain}"
       echo "export SMTP_URL=\"${smtp_url}\"" >> "$tmpfile"
