@@ -33,3 +33,10 @@ Template: _APP_NAME_/smtp/password
 Type: password
 Description: SMTP password:
  Enter the password to use to authenticate against your SMTP server.
+
+Template: _APP_NAME_/smtp/admin_email
+Type: string
+Description: Administrator email:
+ Enter the default administrator email address.
+ .
+ This address might be used to send an email to test the SMTP configuration.

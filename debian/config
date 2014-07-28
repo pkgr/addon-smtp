@@ -29,7 +29,10 @@ else
     default_hostname="$RET"
   fi
   # replace default value
-  db_subst ${APP_NAME}/smtp/domain default "${default_hostname}"
+  db_set ${APP_NAME}/smtp/domain "${default_hostname}"
   db_input high ${APP_NAME}/smtp/domain || true
+  db_go
+
+  db_input high ${APP_NAME}/smtp/admin_email || true
   db_go
 fi
