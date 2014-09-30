@@ -1,0 +1,79 @@
+#!/bin/bash
+
+set -e
+
+. "${INSTALLER_DIR}/wizard"
+
+input_start() {
+	wiz_put "smtp/autoinstall"
+	if wiz_ask ; then
+		RET=$(wiz_get "smtp/autoinstall")
+		if [ "$RET" = "smtp" ] ; then
+			STATE="smtp_params"
+		elif [ "$RET" = "sendmail" ]; then
+			STATE="sendmail_params"
+		else
+			STATE="done"
+		fi
+	else
+		STATE="done"
+		echo "SMTP configuration canceled."
+		exit 1
+	fi
+
+}
+
+input_smtp_params() {
+	local default_hostname="$(wiz_get "server/hostname" || hostname -f || hostname || echo "")"
+
+	if [ -n "$(wiz_get "smtp/domain")" ] ; then
+		wiz_set "smtp/domain" "${default_hostname}"
+	fi
+
+	wiz_put "smtp/host"
+	wiz_put "smtp/port"
+	wiz_put "smtp/username"
+	wiz_put "smtp/password"
+	wiz_put "smtp/domain"
+	wiz_put "smtp/admin_email"
+
+	if wiz_ask ; then
+		STATE="done"
+	else
+		STATE="start"
+	fi
+}
+
+input_sendmail_params() {
+	wiz_put "smtp/admin_email"
+
+	if wiz_ask ; then
+		STATE="done"
+	else
+		STATE="start"
+	fi
+}
+
+state_machine() {
+	case "$1" in
+		"start")
+			input_start
+			;;
+		"smtp_params")
+			input_smtp_params
+			;;
+		"sendmail_params")
+			input_sendmail_params
+			;;
+		"done")
+			echo "DONE"
+			break
+			;;
+		*)
+			echo "invalid state ${STATE}"
+			break
+			;;
+	esac
+}
+
+wizard "start"

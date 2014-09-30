@@ -1,0 +1,41 @@
+Template: smtp/autoinstall
+Type: select
+Choices: skip, sendmail, smtp
+Translations: Skip, Sendmail, SMTP
+Default: sendmail
+Description: What do you want to use to send emails from _APP_NAME_?
+ Choose the transport mechanism for sending emails from _APP_NAME_.
+
+Template: smtp/host
+Type: string
+Description: SMTP host:
+ Enter the IP or hostname of your SMTP server.
+
+Template: smtp/port
+Type: string
+Default: 25
+Description: SMTP port:
+ Enter the port of your SMTP server.
+
+Template: smtp/domain
+Type: string
+Default: www.example.com
+Description: SMTP domain:
+ Enter the domain to use when sending emails.
+
+Template: smtp/username
+Type: string
+Description: SMTP username:
+ Enter the username to use to authenticate against your SMTP server.
+
+Template: smtp/password
+Type: password
+Description: SMTP password:
+ Enter the password to use to authenticate against your SMTP server.
+
+Template: smtp/admin_email
+Type: string
+Description: Administrator email:
+ Enter the default administrator email address.
+ .
+ This address might be used to send an email to test the SMTP configuration.

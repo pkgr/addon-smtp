@@ -1,0 +1,54 @@
+#!/bin/bash
+
+set -e
+
+. "${INSTALLER_DIR}/wizard"
+
+OUTPUT="/etc/${APP_NAME}/conf.d/smtp"
+
+write_smtp_params() {
+	local tmpfile=$(mktemp)
+	local smtp_host="$(wiz_get "smtp/host")"
+	local smtp_port="$(wiz_get "smtp/port")"
+	local smtp_username="$(wiz_get "smtp/username")"
+	local smtp_password="$(wiz_get "smtp/password")"
+	local smtp_domain="$(wiz_get "smtp/domain")"
+	local admin_email="$(wiz_get "smtp/admin_email")"
+	# generate SMTP_URL, urlencode username and password
+	local smtp_url="smtp://$(wiz_urlencode "${smtp_username}"):$(wiz_urlencode "${smtp_password}")@${smtp_host}:${smtp_port}/${smtp_domain}"
+
+	echo "export EMAIL_DELIVERY_METHOD=\"smtp\"" > "$tmpfile"
+	echo "export ADMIN_EMAIL=\"${admin_email}\"" >> "$tmpfile"
+	echo "export SMTP_HOST=\"${smtp_host}\"" >> "$tmpfile"
+	echo "export SMTP_PORT=\"${smtp_port}\"" >> "$tmpfile"
+	echo "export SMTP_USERNAME=\"${smtp_username}\"" >> "$tmpfile"
+	echo "export SMTP_PASSWORD=\"${smtp_password}\"" >> "$tmpfile"
+	echo "export SMTP_DOMAIN=\"${smtp_domain}\"" >> "$tmpfile"
+	echo "export SMTP_URL=\"${smtp_url}\"" >> "$tmpfile"
+
+	mv -f "$tmpfile" "$OUTPUT"
+}
+
+write_sendmail_params() {
+	local tmpfile=$(mktemp)
+	local admin_email="$(wiz_get "smtp/admin_email")"
+	echo "export EMAIL_DELIVERY_METHOD=\"sendmail\"" > "$tmpfile"
+	echo "export ADMIN_EMAIL=\"${admin_email}\"" >> "$tmpfile"
+	mv -f "$tmpfile" "$OUTPUT"
+}
+
+case "$(wiz_get "smtp/autoinstall")" in
+	"smtp")
+		write_smtp_params
+		;;
+	"sendmail")
+		write_sendmail_params
+		;;
+	"skip")
+		;;
+	*)
+		echo "Unknown value for server/autoinstall"
+		;;
+esac
+
+exit 0
