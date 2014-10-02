@@ -26,8 +26,9 @@ input_start() {
 input_smtp_params() {
 	local default_hostname="$(wiz_get "server/hostname" || hostname -f || hostname || echo "")"
 
-	if [ -n "$(wiz_get "smtp/domain")" ] ; then
+	if ! wiz_get "smtp/domain" &>/dev/null ; then
 		wiz_set "smtp/domain" "${default_hostname}"
+		wiz_unseen "smtp/domain"
 	fi
 
 	wiz_put "smtp/host"
