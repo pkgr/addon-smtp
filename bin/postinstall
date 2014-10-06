@@ -27,6 +27,7 @@ write_smtp_params() {
 	echo "export SMTP_URL=\"${smtp_url}\"" >> "$tmpfile"
 
 	mv -f "$tmpfile" "$OUTPUT"
+	chown ${APP_USER}.${APP_GROUP} "$OUTPUT"
 }
 
 write_sendmail_params() {
@@ -34,7 +35,9 @@ write_sendmail_params() {
 	local admin_email="$(wiz_get "smtp/admin_email")"
 	echo "export EMAIL_DELIVERY_METHOD=\"sendmail\"" > "$tmpfile"
 	echo "export ADMIN_EMAIL=\"${admin_email}\"" >> "$tmpfile"
+
 	mv -f "$tmpfile" "$OUTPUT"
+	chown ${APP_USER}.${APP_GROUP} "$OUTPUT"
 }
 
 case "$(wiz_get "smtp/autoinstall")" in
