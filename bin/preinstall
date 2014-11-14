@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -e
+
+. "${INSTALLER_DIR}/wizard"
+
+install_postfix_server() {
+	case "$(wiz_fact "osfamily")" in
+		"debian")
+			if ! wiz_check_package "postfix" ; then
+				apt-get install postfix -y --force-yes
+			fi
+			;;
+		"redhat")
+			if ! wiz_check_package "postfix" ; then
+				yum install -y postfix
+				chkconfig postfix on
+				service postfix start
+			fi
+			;;
+	esac
+}
+
+case "$(wiz_get "smtp/autoinstall")" in
+	"sendmail")
+		install_postfix_server
+		;;
+	*)
+		;;
+esac
+
+exit 0
