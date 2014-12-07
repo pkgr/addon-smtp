@@ -8,6 +8,7 @@ OUTPUT="/etc/${APP_NAME}/conf.d/smtp"
 
 write_smtp_params() {
 	local tmpfile=$(mktemp)
+	local smtp_authentication="$(wiz_get "smtp/authentication")"
 	local smtp_host="$(wiz_get "smtp/host")"
 	local smtp_port="$(wiz_get "smtp/port")"
 	local smtp_username="$(wiz_get "smtp/username")"
@@ -19,10 +20,13 @@ write_smtp_params() {
 
 	echo "export EMAIL_DELIVERY_METHOD=\"smtp\"" > "$tmpfile"
 	echo "export ADMIN_EMAIL=\"${admin_email}\"" >> "$tmpfile"
+	echo "export SMTP_AUTHENTICATION=\"${smtp_authentication}\"" >> "$tmpfile"
 	echo "export SMTP_HOST=\"${smtp_host}\"" >> "$tmpfile"
 	echo "export SMTP_PORT=\"${smtp_port}\"" >> "$tmpfile"
-	echo "export SMTP_USERNAME=\"${smtp_username}\"" >> "$tmpfile"
-	echo "export SMTP_PASSWORD=\"${smtp_password}\"" >> "$tmpfile"
+	if [ "$smtp_authentication" != "none" ]; then
+		echo "export SMTP_USERNAME=\"${smtp_username}\"" >> "$tmpfile"
+		echo "export SMTP_PASSWORD=\"${smtp_password}\"" >> "$tmpfile"
+	fi
 	echo "export SMTP_DOMAIN=\"${smtp_domain}\"" >> "$tmpfile"
 	echo "export SMTP_URL=\"${smtp_url}\"" >> "$tmpfile"
 

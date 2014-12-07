@@ -6,6 +6,14 @@ Default: sendmail
 Description: What do you want to use to send emails from _APP_NAME_?
  Choose the transport mechanism for sending emails from _APP_NAME_.
 
+Template: smtp/authentication
+Type: select
+Choices: none, plain, login, cram_md5
+Translations: None, Plain, Login (recommended), CRAM-MD5
+Default: login
+Description: Authentication type
+ If your mail server requires authentication, you need to specify the authentication type.
+
 Template: smtp/host
 Type: string
 Description: SMTP host:

@@ -9,7 +9,7 @@ input_start() {
 	if wiz_ask ; then
 		RET=$(wiz_get "smtp/autoinstall")
 		if [ "$RET" = "smtp" ] ; then
-			STATE="smtp_params"
+			STATE="smtp_authentication"
 		elif [ "$RET" = "sendmail" ]; then
 			STATE="sendmail_params"
 		else
@@ -19,6 +19,16 @@ input_start() {
 		STATE="done"
 		echo "SMTP configuration canceled."
 		exit 1
+	fi
+
+}
+
+input_smtp_authentication() {
+	wiz_put "smtp/authentication"
+	if wiz_ask ; then
+		STATE="smtp_params"
+	else
+		STATE="start"
 	fi
 
 }
@@ -33,15 +43,17 @@ input_smtp_params() {
 
 	wiz_put "smtp/host"
 	wiz_put "smtp/port"
-	wiz_put "smtp/username"
-	wiz_put "smtp/password"
+	if [ "$(wiz_get "smtp/authentication")" != "none" ] ; then
+		wiz_put "smtp/username"
+		wiz_put "smtp/password"
+	fi
 	wiz_put "smtp/domain"
 	wiz_put "smtp/admin_email"
 
 	if wiz_ask ; then
 		STATE="done"
 	else
-		STATE="start"
+		STATE="smtp_authentication"
 	fi
 }
 
@@ -62,6 +74,9 @@ state_machine() {
 			;;
 		"smtp_params")
 			input_smtp_params
+			;;
+		"smtp_authentication")
+			input_smtp_authentication
 			;;
 		"sendmail_params")
 			input_sendmail_params
