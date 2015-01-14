@@ -18,6 +18,16 @@ install_postfix_server() {
 				service postfix start
 			fi
 			;;
+		"suse")
+			if ! wiz_check_package "postfix" ; then
+				zypper install -y postfix
+				chkconfig postfix on
+				service postfix start
+			fi
+			;;
+		*)
+			echo "don't know how to install postfix on this platform"
+			;;
 	esac
 }
 
