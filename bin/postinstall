@@ -19,7 +19,9 @@ write_smtp_params() {
 	local smtp_url="smtp://$(wiz_urlencode "${smtp_username}"):$(wiz_urlencode "${smtp_password}")@${smtp_host}:${smtp_port}/${smtp_domain}"
 
 	echo "export EMAIL_DELIVERY_METHOD=\"smtp\"" > "$tmpfile"
-	echo "export ADMIN_EMAIL=\"${admin_email}\"" >> "$tmpfile"
+	if [ "$admin_email" != "" ]; then
+		echo "export ADMIN_EMAIL=\"${admin_email}\"" >> "$tmpfile"
+	fi
 	echo "export SMTP_AUTHENTICATION=\"${smtp_authentication}\"" >> "$tmpfile"
 	echo "export SMTP_HOST=\"${smtp_host}\"" >> "$tmpfile"
 	echo "export SMTP_PORT=\"${smtp_port}\"" >> "$tmpfile"
@@ -37,7 +39,10 @@ write_smtp_params() {
 write_sendmail_params() {
 	local tmpfile=$(mktemp)
 	local admin_email="$(wiz_get "smtp/admin_email")"
-	echo "export EMAIL_DELIVERY_METHOD=\"sendmail\"" > "$tmpfile"
+
+	if [ "$admin_email" != "" ]; then
+		echo "export EMAIL_DELIVERY_METHOD=\"sendmail\"" > "$tmpfile"
+	fi
 	echo "export ADMIN_EMAIL=\"${admin_email}\"" >> "$tmpfile"
 
 	mv -f "$tmpfile" "$OUTPUT"
