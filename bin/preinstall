@@ -34,7 +34,10 @@ install_postfix_server() {
 
 case "$(wiz_get "smtp/autoinstall")" in
 	"sendmail")
-		install_postfix_server
+		if ! [ -x "$(command -v sendmail)" ]; then
+			echo 'Sendmail not found in path. Installing postfix'
+			install_postfix_server
+		fi
 		;;
 	*)
 		;;
