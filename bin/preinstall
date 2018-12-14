@@ -8,7 +8,7 @@ install_postfix_server() {
 	case "$(wiz_fact "osfamily")" in
 		"debian")
 			if ! wiz_check_package "postfix" ; then
-				apt-get install postfix -y --force-yes
+				apt-get install postfix -y
 			fi
 			;;
 		"redhat")
